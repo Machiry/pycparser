@@ -15,5 +15,3 @@ parser.out
 utils/z.c
 *.egg-info
 .idea/
-examples/temp_test.py
-examples/c_files/temp_test.c
