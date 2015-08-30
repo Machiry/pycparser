@@ -68,7 +68,8 @@
 #define POOL_SIZE 8 * 1024
 #define MIN_POOL_ALLOC_QUANTAS 16
 
-
+typedef static void (*myfunc)(int, float);
+static long cappy[100] = {0};
 typedef unsigned char byte;
 typedef unsigned long ulong;
 

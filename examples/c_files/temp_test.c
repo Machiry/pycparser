@@ -27,6 +27,28 @@ union mem_header_union
     Align align_dummy;
 };
 
+enum strategy { RANDOM=90, IMMEDIATE, SEARCH };
+
+enum strategy hello;
+
+struct mem_header_struct
+{
+    struct
+    {
+        // Pointer to the next block in the free list
+        //
+        union mem_header_union* next;
+
+        // Size of the block (in quantas of sizeof(mem_header_t))
+        //
+        ulong size;
+    } s;
+
+    // Used to align headers in memory to a boundary
+    //
+    Align align_dummy;
+};
+
 typedef union mem_header_union mem_header_t;
 
 // Initial empty list
