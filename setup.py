@@ -38,13 +38,14 @@ setup(
         pure Python using the PLY parsing library.
         It parses C code into an AST and can serve as a front-end for
         C compilers or analysis tools.
+        Credit Goes to: Eli Bendersky
     """,
     license='BSD',
     version='2.14',
     author='Eli Bendersky',
-    maintainer='Eli Bendersky',
-    author_email='eliben@gmail.com',
-    url='https://github.com/eliben/pycparser',
+    maintainer='Aravind Machiry',
+    author_email='machiry_msidc@hotmail.com',
+    url='https://github.com/Machiry/pycparser',
     platforms='Cross Platform',
     classifiers = [
         'Programming Language :: Python :: 2',

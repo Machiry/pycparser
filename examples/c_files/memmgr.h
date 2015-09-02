@@ -62,7 +62,20 @@
 // 1. This memory manager is *not thread safe*. Use it only
 //    for single thread/task applications.
 // 
-
+void jkll() {
+    int i;
+    if(1) {
+        int i1;
+        {
+            int i;
+            printf("Innest");
+        }
+        printf("First Scope");
+    } else {
+        float j1;
+        printf("Second Scope");
+    }
+}
 #define DEBUG_MEMMGR_SUPPORT_STATS 1
 
 #define POOL_SIZE 8 * 1024

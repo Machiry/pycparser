@@ -8,6 +8,7 @@
 #include "memmgr.h"
 
 typedef ulong Align;
+int hel,j,k,l;
 
 union mem_header_union
 {
@@ -20,6 +21,26 @@ union mem_header_union
         // Size of the block (in quantas of sizeof(mem_header_t))
         //
         ulong size; 
+    } s;
+
+    // Used to align headers in memory to a boundary
+    //
+    Align align_dummy;
+} challa;
+
+int *chak;
+
+union
+{
+    struct
+    {
+        // Pointer to the next block in the free list
+        //
+        union mem_header_union* next;
+
+        // Size of the block (in quantas of sizeof(mem_header_t))
+        //
+        ulong size;
     } s;
 
     // Used to align headers in memory to a boundary
@@ -182,6 +203,7 @@ void memmgr_free(void* ap)
 {
     mem_header_t* block;
     mem_header_t* p;
+    int i=0;
 
     // acquire pointer to block header
     block = ((mem_header_t*) ap) - 1;
@@ -222,6 +244,23 @@ void memmgr_free(void* ap)
     else
     {
         p->s.next = block;
+    }
+    while(i < 3) {
+        i++;
+    }
+    do {
+        i--;
+    } while(i>1);
+
+    for(int j=0,k=5; j<k;j++);
+
+    switch(i) {
+        int k = 0;
+        case 1: { break;}
+        case 2:
+            i++;
+            break;
+        default: ;
     }
 
     freep = p;
