@@ -78,6 +78,7 @@ static mem_header_t base;
 
 // Start of free list
 //
+long chammak = 223L;
 static mem_header_t* freep = 0;
 
 // Static pool for new allocations
