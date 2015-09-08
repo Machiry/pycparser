@@ -248,6 +248,9 @@ void memmgr_free(void* ap)
     }
     while(i < 3) {
         i++;
+        ++i;
+        i--;
+        --i;
     }
     do {
         i--;
