@@ -255,8 +255,8 @@ void memmgr_free(void* ap)
     do {
         i--;
     } while(i>1);
-
-    for(int j=0,k=5; j<k;j++);
+    int j,k;
+    for(j=0,k=5; j<k;j++);
 
     switch(i) {
         int k = 0;
@@ -266,6 +266,6 @@ void memmgr_free(void* ap)
             break;
         default: ;
     }
-
+    pool[0] = i > 5 ? 1 : 2;
     freep = p;
 }
