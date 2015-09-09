@@ -205,6 +205,7 @@ void memmgr_free(void* ap)
     mem_header_t* block;
     mem_header_t* p;
     int i=0;
+    int arr[100] = {0};
 
     // acquire pointer to block header
     block = ((mem_header_t*) ap) - 1;
@@ -251,6 +252,7 @@ void memmgr_free(void* ap)
         ++i;
         i--;
         --i;
+        goto LABEL1;
     }
     do {
         i--;
@@ -266,6 +268,8 @@ void memmgr_free(void* ap)
             break;
         default: ;
     }
+
+    LABEL1:
     pool[0] = i > 5 ? 1 : 2;
     freep = p;
 }
