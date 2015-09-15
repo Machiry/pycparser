@@ -38,6 +38,10 @@ tokens = [
 
     # Ellipsis (...)
     'ELLIPSIS',
+
+    # __attribute__ tag
+    'ATTRIBUTE_TAG',
+    'ASM_TAG',
 ]
     
 # Operators

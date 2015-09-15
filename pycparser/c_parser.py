@@ -1063,6 +1063,34 @@ class CParser(PLYParser):
 
         p[0] = self._type_modify_decl(decl=p[1], modifier=func)
 
+    def p_direct_declarator_7(self, p):
+        """ direct_declarator   : direct_declarator LPAREN parameter_type_list RPAREN attribute_tag
+                                | direct_declarator LPAREN identifier_list_opt RPAREN attribute_tag
+        """
+        func = c_ast.FuncDecl(
+            args=p[3],
+            type=None,
+            coord=p[1].coord)
+
+        # To see why _get_yacc_lookahead_token is needed, consider:
+        #   typedef char TT;
+        #   void foo(int TT) { TT = 10; }
+        # Outside the function, TT is a typedef, but inside (starting and
+        # ending with the braces) it's a parameter.  The trouble begins with
+        # yacc's lookahead token.  We don't know if we're declaring or
+        # defining a function until we see LBRACE, but if we wait for yacc to
+        # trigger a rule on that token, then TT will have already been read
+        # and incorrectly interpreted as TYPEID.  We need to add the
+        # parameters to the scope the moment the lexer sees LBRACE.
+        #
+        if self._get_yacc_lookahead_token().type == "LBRACE":
+            if func.args is not None:
+                for param in func.args.params:
+                    if isinstance(param, c_ast.EllipsisParam): break
+                    self._add_identifier(param.name, param.coord)
+
+        p[0] = self._type_modify_decl(decl=p[1], modifier=func)
+
     def p_pointer(self, p):
         """ pointer : TIMES type_qualifier_list_opt
                     | TIMES type_qualifier_list_opt pointer
@@ -1312,6 +1340,24 @@ class CParser(PLYParser):
 
     def p_direct_abstract_declarator_7(self, p):
         """ direct_abstract_declarator  : LPAREN parameter_type_list_opt RPAREN
+        """
+        p[0] = c_ast.FuncDecl(
+            args=p[2],
+            type=c_ast.TypeDecl(None, None, None),
+            coord=self._coord(p.lineno(1)))
+
+    def p_direct_abstract_declarator_8(self, p):
+        """ direct_abstract_declarator  : direct_abstract_declarator LPAREN parameter_type_list_opt RPAREN attribute_tag
+        """
+        func = c_ast.FuncDecl(
+            args=p[3],
+            type=None,
+            coord=p[1].coord)
+
+        p[0] = self._type_modify_decl(decl=p[1], modifier=func)
+
+    def p_direct_abstract_declarator_9(self, p):
+        """ direct_abstract_declarator  : LPAREN parameter_type_list_opt RPAREN attribute_tag
         """
         p[0] = c_ast.FuncDecl(
             args=p[2],
@@ -1584,6 +1630,35 @@ class CParser(PLYParser):
     def p_primary_expression_4(self, p):
         """ primary_expression  : LPAREN expression RPAREN """
         p[0] = p[2]
+
+    def p_attribute_tag_1(self, p):
+        """ attribute_tag  :  ATTRIBUTE_TAG LPAREN LPAREN attribute_list RPAREN RPAREN
+
+        """
+
+    def p_asm_tag_1(self, p):
+        """ asm_tag  :  ASM_TAG LPAREN unified_string_literal RPAREN
+
+        """
+
+    def p_attribute_tag_2(self, p):
+        """ attribute_tag  :  attribute_tag attribute_tag
+                           | asm_tag
+
+        """
+
+    def p_attribute_list_1(self, p):
+        """ attribute_list  : ID
+                            | constant
+        """
+
+    def p_attribute_list_2(self, p):
+        """ attribute_list  : attribute_list COMMA attribute_list
+        """
+
+    def p_attribute_list_3(self, p):
+        """ attribute_list  : ID LPAREN attribute_list RPAREN
+        """
 
     def p_primary_expression_5(self, p):
         """ primary_expression  : OFFSETOF LPAREN type_name COMMA identifier RPAREN

@@ -172,6 +172,10 @@ class CLexer(object):
 
         # pre-processor
         'PPHASH',      # '#'
+
+        # __attribute__ tag
+        'ATTRIBUTE_TAG',
+        'ASM_TAG',
     )
 
     ##
@@ -471,6 +475,14 @@ class CLexer(object):
     def t_BAD_STRING_LITERAL(self, t):
         msg = "String contains invalid escape code"
         self._error(msg, t)
+
+    @TOKEN(r'__attribute__')
+    def t_ATTRIBUTE_TAG(self, t):
+        return t
+
+    @TOKEN(r'__asm__')
+    def t_ASM_TAG(self, t):
+        return t
 
     @TOKEN(identifier)
     def t_ID(self, t):
