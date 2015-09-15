@@ -721,6 +721,7 @@ class CParser(PLYParser):
                             | _COMPLEX
                             | SIGNED
                             | UNSIGNED
+                            | __BUILTIN_VA_LIST
         """
         p[0] = c_ast.IdentifierType([p[1]], coord=self._coord(p.lineno(1)))
 
@@ -735,6 +736,7 @@ class CParser(PLYParser):
         """ type_qualifier  : CONST
                             | RESTRICT
                             | VOLATILE
+                            | __RESTRICT
         """
         p[0] = p[1]
 
