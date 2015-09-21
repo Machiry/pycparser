@@ -1635,30 +1635,57 @@ class CParser(PLYParser):
         """ attribute_tag  :  ATTRIBUTE_TAG LPAREN LPAREN attribute_list RPAREN RPAREN
 
         """
+        p[0] = c_ast.TypeAnnotationFunc(name='__attribute__', args=list(p[4]), coord=self._coord(p.lineno(1)))
 
     def p_asm_tag_1(self, p):
         """ asm_tag  :  ASM_TAG LPAREN unified_string_literal RPAREN
 
         """
+        p[0] = c_ast.AsmCode(code_string=p[3], coord=self._coord(p.lineno(1)))
 
     def p_attribute_tag_2(self, p):
         """ attribute_tag  :  attribute_tag attribute_tag
                            | asm_tag
 
         """
+        if len(p) > 2:
+           p[0] = p[1]
+        else:
+            to_ret = []
+            for i in range(len(p)-1):
+                if isinstance(p[i+1], list):
+                    to_ret.extend(p[i+1])
+                else:
+                    to_ret.append(p[i+1])
+            p[0] = to_ret
 
     def p_attribute_list_1(self, p):
         """ attribute_list  : ID
                             | constant
         """
+        print 'HEllo'
+        p[0] = c_ast.TypeAnnotation(name=p[1], coord=self._coord(p.lineno(1)))
 
     def p_attribute_list_2(self, p):
         """ attribute_list  : attribute_list COMMA attribute_list
         """
+        target_ret = []
+        if isinstance(p[1], list):
+            target_ret.extend(p[1])
+        else:
+            target_ret.append(p[1])
+
+        if isinstance(p[3], list):
+            target_ret.extend(p[3])
+        else:
+            target_ret.append(p[3])
+
+        p[0] = target_ret
 
     def p_attribute_list_3(self, p):
         """ attribute_list  : ID LPAREN attribute_list RPAREN
         """
+        p[0] = c_ast.TypeAnnotationFunc(name=p[1], args=list(p[3]), coord=self._coord(p.lineno(1)))
 
     def p_primary_expression_5(self, p):
         """ primary_expression  : OFFSETOF LPAREN type_name COMMA identifier RPAREN

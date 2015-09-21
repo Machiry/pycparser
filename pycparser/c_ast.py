@@ -126,6 +126,43 @@ class NodeVisitor(object):
         for c_name, c in node.children():
             self.visit(c)
 
+class TypeAnnotation(Node):
+    __slots__ = ('name', 'coord', '__weakref__')
+    def __init__(self, name, coord=None):
+        self.name = name
+        self.coord = coord
+
+    def children(self):
+        return None
+
+    attr_names = ()
+
+class TypeAnnotationFunc(Node):
+    __slots__ = ('name', 'args', 'coord', '__weakref__')
+
+    def __init__(self, name, args, coord=None):
+        self.name = name
+        self.args = args
+        self.coord = coord
+
+    def children(self):
+        nodelist = []
+        if self.args is not None: nodelist.append(("args", self.args))
+        return tuple(nodelist)
+
+    attr_names = ()
+
+class AsmCode(Node):
+    __slots__ = ('code_string', 'coord', '__weakref__')
+
+    def __init__(self, code_string, coord=None):
+        self.code_string = code_string
+        self.coord = coord
+
+    def children(self):
+        return []
+
+    attr_names = ()
 
 class ArrayDecl(Node):
     __slots__ = ('type', 'dim', 'dim_quals', 'coord', '__weakref__')
