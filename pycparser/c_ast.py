@@ -509,11 +509,12 @@ class FuncCall(Node):
     attr_names = ()
 
 class FuncDecl(Node):
-    __slots__ = ('args', 'type', 'coord', '__weakref__')
-    def __init__(self, args, type, coord=None):
+    __slots__ = ('args', 'type', 'annotations', 'coord', '__weakref__')
+    def __init__(self, args, type, annotations=None, coord=None):
         self.args = args
         self.type = type
         self.coord = coord
+        self.annotations = annotations
 
     def children(self):
         nodelist = []

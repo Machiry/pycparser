@@ -1042,6 +1042,7 @@ class CParser(PLYParser):
         func = c_ast.FuncDecl(
             args=p[3],
             type=None,
+            annotations=None,
             coord=p[1].coord)
 
         # To see why _get_yacc_lookahead_token is needed, consider:
@@ -1067,9 +1068,13 @@ class CParser(PLYParser):
         """ direct_declarator   : direct_declarator LPAREN parameter_type_list RPAREN attribute_tag
                                 | direct_declarator LPAREN identifier_list_opt RPAREN attribute_tag
         """
+        target_annotations = p[5]
+        if not isinstance(target_annotations, list):
+            target_annotations = [target_annotations]
         func = c_ast.FuncDecl(
             args=p[3],
             type=None,
+            annotations=target_annotations,
             coord=p[1].coord)
 
         # To see why _get_yacc_lookahead_token is needed, consider:
@@ -1334,6 +1339,7 @@ class CParser(PLYParser):
         func = c_ast.FuncDecl(
             args=p[3],
             type=None,
+            annotations=None,
             coord=p[1].coord)
 
         p[0] = self._type_modify_decl(decl=p[1], modifier=func)
@@ -1344,14 +1350,20 @@ class CParser(PLYParser):
         p[0] = c_ast.FuncDecl(
             args=p[2],
             type=c_ast.TypeDecl(None, None, None),
+            annotations=None,
             coord=self._coord(p.lineno(1)))
 
     def p_direct_abstract_declarator_8(self, p):
         """ direct_abstract_declarator  : direct_abstract_declarator LPAREN parameter_type_list_opt RPAREN attribute_tag
         """
+        target_annotations = p[5]
+        if not isinstance(target_annotations, list):
+            target_annotations = [target_annotations]
+
         func = c_ast.FuncDecl(
             args=p[3],
             type=None,
+            annotations=target_annotations,
             coord=p[1].coord)
 
         p[0] = self._type_modify_decl(decl=p[1], modifier=func)
@@ -1359,9 +1371,14 @@ class CParser(PLYParser):
     def p_direct_abstract_declarator_9(self, p):
         """ direct_abstract_declarator  : LPAREN parameter_type_list_opt RPAREN attribute_tag
         """
+        target_annotations = p[4]
+        if not isinstance(target_annotations, list):
+            target_annotations = [target_annotations]
+
         p[0] = c_ast.FuncDecl(
             args=p[2],
             type=c_ast.TypeDecl(None, None, None),
+            annotations=target_annotations,
             coord=self._coord(p.lineno(1)))
 
     # declaration is a list, statement isn't. To make it consistent, block_item
@@ -1635,7 +1652,12 @@ class CParser(PLYParser):
         """ attribute_tag  :  ATTRIBUTE_TAG LPAREN LPAREN attribute_list RPAREN RPAREN
 
         """
-        p[0] = c_ast.TypeAnnotationFunc(name='__attribute__', args=list(p[4]), coord=self._coord(p.lineno(1)))
+        attr_list = []
+        if isinstance(p[4], list):
+            attr_list.extend(p[4])
+        else:
+            attr_list.append(p[4])
+        p[0] = c_ast.TypeAnnotationFunc(name='__attribute__', args=attr_list, coord=self._coord(p.lineno(1)))
 
     def p_asm_tag_1(self, p):
         """ asm_tag  :  ASM_TAG LPAREN unified_string_literal RPAREN
@@ -1663,7 +1685,6 @@ class CParser(PLYParser):
         """ attribute_list  : ID
                             | constant
         """
-        print 'HEllo'
         p[0] = c_ast.TypeAnnotation(name=p[1], coord=self._coord(p.lineno(1)))
 
     def p_attribute_list_2(self, p):
@@ -1685,7 +1706,12 @@ class CParser(PLYParser):
     def p_attribute_list_3(self, p):
         """ attribute_list  : ID LPAREN attribute_list RPAREN
         """
-        p[0] = c_ast.TypeAnnotationFunc(name=p[1], args=list(p[3]), coord=self._coord(p.lineno(1)))
+        attr_list = []
+        if isinstance(p[3], list):
+            attr_list.extend(p[3])
+        else:
+            attr_list.append(p[3])
+        p[0] = c_ast.TypeAnnotationFunc(name=p[1], args=attr_list, coord=self._coord(p.lineno(1)))
 
     def p_primary_expression_5(self, p):
         """ primary_expression  : OFFSETOF LPAREN type_name COMMA identifier RPAREN
